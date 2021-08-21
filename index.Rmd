@@ -184,7 +184,7 @@ x %>%
 
 # Parties
 
-40 entries have at least one parties. If a person has more than one party, each
+40 entries have at least one party. If a person has more than one party, each
 is counted here. For the most part, I listed parties for those
 who had one displayed on Wikipedia, i.e. primarily elected officials. 
 
