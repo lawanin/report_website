@@ -41,7 +41,7 @@ x %>%
 # Decades
 
 As expected, the vast majority of entries are from recent decades. The '70s and
-80's have the most degrees. The '50s and '60s are comparatively lacking. It 
+'80's have the most degrees. The '50s and '60s are comparatively lacking. It 
 may be natural that the most recent graduates are also lacking. 
 
 ```{r, warning = FALSE}
@@ -135,7 +135,7 @@ x %>%
   scale_y_continuous(labels = scales::percent_format())
 ```
 
-Among all races, males outnumber females. The only exceptions are the for those
+Among all races, males outnumber females. The only exceptions are the
 races represented by a single member, American Indians and  Australian Aboriginals. 
 
 ```{r}
@@ -165,7 +165,7 @@ x %>%
 # Countries
 
 In the Airtable, multiple countries may be listed for one entry. These include 
-places where people are involved or born from what I gathered from a quick
+places where people are involved or born, from what I gathered from a quick
 reading of one source, usually Wikipedia. These countries are generally in order
 of precedence. The first, and so primary, country is used for each entry here. 
 
@@ -184,7 +184,7 @@ x %>%
 
 # Parties
 
-40 entries have at least one parties. If a person has mor than one party, each
+40 entries have at least one parties. If a person has more than one party, each
 is counted here. For the most part, I listed parties for those
 who had one displayed on Wikipedia, i.e. primarily elected officials. 
 
@@ -210,7 +210,7 @@ x %>%
        y = "")
 ```
 
-Democrats are nearly equal in gender. Compared to the gender ratio among all the entries, women are overrepresented among the Democrats and underrepresented among the Republicans. 
+Democrats are nearly equal in gender. Compared to the gender ratio among all the entries, women are overrepresented among Democrats and underrepresented among Republicans. 
 
 ```{r}
 x %>% 
