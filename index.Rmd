@@ -90,7 +90,7 @@ x %>%
   ggplot(aes(y = decade, x = percent_of_decade,  fill = gender, color =)) +
   geom_col() +
   scale_x_continuous(labels = scales::percent_format()) +
-  labs(title = "Decade and Gender", 
+  labs(title = "Decades and Gender", 
        x = "Percent of Gender in Decade", 
        y = "", 
        fill = "Gender", 
