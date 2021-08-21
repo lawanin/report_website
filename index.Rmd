@@ -155,7 +155,7 @@ x %>%
   mutate(test_sum = sum(percent_of_race)) %>% 
   ggplot(aes(x = percent_of_race, y = race, fill = gender, color = gender)) +
   geom_col() +
-  labs(title = "Race and Gender", 
+  labs(title = "Races and Gender", 
        x = "Percent", 
        y = "",
        fill = "Gender",
@@ -177,12 +177,15 @@ x %>%
   mutate(country = str_replace_all(country, ",.*", "")) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(country)))) +
   geom_bar() +
-  labs(title = "Country", 
+  labs(title = "Countries", 
        x = "Number",
        y = "")
 ```
 
 # Parties
+
+40 entries have a party. For the most part, I listed parties for those
+who had one displayed on Wikipedia, i.e. primarily elected officials.
 
 Democrats are the most represented party. Several of the parties listed below
 are for foreign countries. 
@@ -201,7 +204,7 @@ x %>%
                               "Green", "Democratic Progressive Party",
                               "Kuomintang", "National Democratic Party of Tibet", 
                               "Popular Democratic", "Reform"))) +
-  labs(title = "Party", 
+  labs(title = "Parties", 
        x = "Number", 
        y = "")
 ```
@@ -221,7 +224,7 @@ x %>%
   geom_col() +
   scale_y_discrete(labels = c("Democrat", "Independent", "Libretarian", "Republican")) +
   scale_x_continuous(labels = scales::percent_format()) +
-  labs(title = "Party and Gender",
+  labs(title = "Parties and Gender",
        x = "Percent", 
        y = "", 
        fill = "Gender",
@@ -258,7 +261,7 @@ x %>%
                     values = c("black", "yellow2", "sienna", "steelblue3", "wheat")) +
   scale_color_manual(limits = c("Black", "Asian", "Hispanic", "Jewish", "White"),
                     values = c("black", "yellow2", "sienna", "steelblue3", "wheat")) +
-  labs(title = "Party and Race",
+  labs(title = "Parties and Race",
        x = "Percent", 
        y = "",
        fill = "Race",
@@ -385,7 +388,7 @@ x %>%
   ggplot(aes(percent_of_degree, degree, fill = decade, color = decade)) +
   geom_col() +
   scale_x_continuous(labels = scales::percent_format()) +
-  labs(title = "Degree and Decade", 
+  labs(title = "Degrees and Decade", 
        x = "Percent",
        y = "", 
        fill = "Decade",
