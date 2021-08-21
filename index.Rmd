@@ -167,7 +167,7 @@ x %>%
 In the Airtable, multiple countries may be listed for one entry. These include 
 places where people are involved or born, from what I gathered from a quick
 reading of one source, usually Wikipedia. These countries are generally in order
-of precedence. The first, and so primary, country is used for each entry here. 
+of precedence. The first, and so primary, country for each entry is used here. 
 
 As expected, the vast majority of entries are based in the U.S. Asian countries
 make up the the majority of foreign locations. 
