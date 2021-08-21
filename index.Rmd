@@ -286,7 +286,7 @@ x %>%
   separate_rows(category, sep = ",") %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
   geom_bar() +
-  labs(title = "Roles of All Phase One Entries", 
+  labs(title = "Roles of All Entries", 
        x = "Number", 
        y = "")
 
