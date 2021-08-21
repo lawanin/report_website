@@ -58,7 +58,6 @@ x %>%
                                 "1990-1999", "2000-2009", "2010-2019")) +
   scale_x_continuous(breaks = seq(0, 40, 5)) +
   labs(title = "Decades",
-       subtitle = "Most degrees in the '70s and '80s",
        x = "Number of Degrees",
        y = "Decade")
 ```
