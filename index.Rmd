@@ -1,0 +1,394 @@
+---
+title: "Phase 1 Report"
+description: This may be easier to view than a PDF, because of the figures.
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+```{r}
+x <- read_csv("phase1_airtable.csv", col_types = cols()) %>% 
+  rename(name = `Name (Last, First)`, 
+         degree = `HLS Degree(s)`,
+         year = `Grad Date(s)`,
+         category = `Position / Role`, 
+         race = `Race`, 
+         gender = `Gender`, 
+         party = `Party`, 
+         country = `Country`) %>% 
+  select(name, degree, year, category, race, gender, party, country) %>% 
+  drop_na(name)
+```
+
+# Gender
+
+89 entries are Male, 52 are Female, and 1, Jack F. Trope, is likely
+male but this has not been included because of the lack of a source. 
+
+```{r}
+x %>% 
+  ggplot(aes(gender)) +
+  geom_bar(aes(y = after_stat(count / sum(count)))) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Gender", 
+       x = "",
+       y = "Number") 
+```
+
+# Decades
+
+As expected, the vast majority of entries are from recent decades. The '70s and
+80's have the most degrees. The '50s and '60s are comparatively lacking. It 
+may be natural that the most recent graduates are also lacking. 
+
+```{r, warning = FALSE}
+x %>% 
+  separate_rows(year, sep = "\\s*/\\s*") %>% 
+  mutate(year = str_replace_all(year, "[^0-9].*", "")) %>% 
+  mutate(year = as.numeric(year)) %>% 
+  ggplot(aes(y = year)) +
+  geom_histogram(boundary = 1950, binwidth = 10, color = "white") +
+  scale_y_continuous(breaks = seq(1875, 2015, 10),
+                     labels = c("1870-1879", "1880-1889", "1890-1899", "1900-1909",
+                                "1910-1919","1920-1929", "1930-1939", "1940-1949",
+                                "1950-1959","1960-1969", "1970-1979", "1980-1989",
+                                "1990-1999", "2000-2009", "2010-2019")) +
+  scale_x_continuous(breaks = seq(0, 40, 5)) +
+  labs(title = "Decades",
+       subtitle = "Most degrees in the '70s and '80s",
+       x = "Number of Degrees",
+       y = "Decade")
+```
+
+As expected, gender balance becomes more equal in later decades. It is notable, 
+however, that females significantly outnumber males among most recent graduates. 
+
+```{r, warning = FALSE}
+x %>%
+  separate_rows(year, sep = "\\s*/\\s*") %>%
+    mutate(year = str_replace_all(year, "[^0-9].*", "")) %>% 
+  mutate(year = as.numeric(year)) %>%
+  drop_na(year) %>% 
+  mutate(decade = case_when(year >= 2010 & year <= 2019 ~ "2010-2019",
+                            year >= 2000 & year <= 2009 ~ "2000-2009",
+                            year >= 1990 & year <= 1999 ~ "1990-1999",
+                            year >= 1980 & year <= 1989 ~ "1980-1989",
+                            year >= 1970 & year <= 1979 ~ "1970-1979",
+                            year >= 1960 & year <= 1969 ~ "1960-1969",
+                            year >= 1950 & year <= 1969 ~ "1950-1959",
+                            year >= 1940 & year <= 1949 ~ "1940-1949",
+                            year >= 1930 & year <= 1939 ~ "1930-1939",
+                            year >= 1920 & year <= 1929 ~ "1920-1929",
+                            year >= 1910 & year <= 1919 ~ "1910-1919",
+                            year >= 1870 & year <= 1879 ~ "1870-1879")) %>% 
+  group_by(decade) %>% 
+  mutate(total_in_decade = n()) %>% 
+  mutate(percent_of_decade = 1 / total_in_decade) %>% 
+  ggplot(aes(y = decade, x = percent_of_decade,  fill = gender, color =)) +
+  geom_col() +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Decade and Gender", 
+       x = "Percent of Gender in Decade", 
+       y = "", 
+       fill = "Gender", 
+       color = "Gender")
+  
+```
+
+# Races
+
+Among all the entries, blacks outnumber other races. Among only the Micro Museum 
+list, whites are the the greatest in number, forming about 40%. 
+
+```{r}
+x %>% 
+  mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
+                          str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
+                          str_detect(race, "Black") == TRUE ~ "Black", 
+                          str_detect(race, "White") == TRUE ~ "White",
+                          str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
+                          str_detect(race, "Asian") == TRUE ~ "Asian",
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>%
+  ggplot(aes(race)) +
+  geom_bar(aes(y = after_stat(count / sum(count)))) +
+  labs(title = "Races of All Entries",
+       x = "",
+       y = "Percent") +
+  scale_y_continuous(labels = scales::percent_format())
+
+x %>% 
+  mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
+                          str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
+                          str_detect(race, "Black") == TRUE ~ "Black", 
+                          str_detect(race, "White") == TRUE ~ "White",
+                          str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
+                          str_detect(race, "Asian") == TRUE ~ "Asian",
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>% 
+  slice(1:91) %>% 
+  ggplot(aes(race)) +
+  geom_bar(aes(y = after_stat(count / sum(count)))) +
+  labs(title = "Races of Micro Museum Entries Only",
+       x = "",
+       y = "Percent") +
+  scale_y_continuous(labels = scales::percent_format())
+```
+
+Among all races, males outnumber females. The only exceptions are the for those
+races represented by a single member, American Indians and  Australian Aboriginals. 
+
+```{r}
+x %>% 
+  drop_na(race) %>% 
+  mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
+                          str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
+                          str_detect(race, "Black") == TRUE ~ "Black", 
+                          str_detect(race, "White") == TRUE ~ "White",
+                          str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
+                          str_detect(race, "Asian") == TRUE ~ "Asian",
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>% 
+  group_by(race) %>% 
+  mutate(total_in_race = n()) %>% 
+  mutate(percent_of_race = 1 / total_in_race) %>% 
+  mutate(test_sum = sum(percent_of_race)) %>% 
+  ggplot(aes(x = percent_of_race, y = race, fill = gender, color = gender)) +
+  geom_col() +
+  labs(title = "Race and Gender", 
+       x = "Percent", 
+       y = "",
+       fill = "Gender",
+       color = "Gender")
+```
+
+# Countries
+
+In the Airtable, multiple countries may be listed for one entry. These include 
+places where people are involved or born from what I gathered from a quick
+reading of one source, usually Wikipedia. These countries are generally in order
+of precedence. The first, and so primary, country is used for each entry here. 
+
+As expected, the vast majority of entries are based in the U.S. Asian countries
+make up the the majority of foreign locations. 
+
+```{r}
+x %>% 
+  mutate(country = str_replace_all(country, ",.*", "")) %>% 
+  ggplot(aes(y = fct_rev(fct_infreq(country)))) +
+  geom_bar() +
+  labs(title = "Country", 
+       x = "Number",
+       y = "")
+```
+
+# Parties
+
+Democrats are the most represented party. Several of the parties listed below
+are for foreign countries. 
+
+```{r, warning = FALSE}
+x %>% 
+  separate_rows(party, sep = "\\s*,\\s*") %>% 
+  mutate(party = str_replace_all(party, "Independent", "I")) %>% 
+  drop_na(party) %>% 
+  ggplot(aes(y = party)) +
+  geom_bar() +
+  scale_y_discrete(limits = rev(c("D", "R", "I", "L", "Green", "Democratic Progressive Party",
+                              "Kuomintang", "National Democratic Party of Tibet", 
+                              "Popular Democratic", "Reform")),
+                   labels = rev(c("Democrat", "Republican", "Independent", "Libretarian", 
+                              "Green", "Democratic Progressive Party",
+                              "Kuomintang", "National Democratic Party of Tibet", 
+                              "Popular Democratic", "Reform"))) +
+  labs(title = "Party", 
+       x = "Number", 
+       y = "")
+```
+
+Democrats are nearly equal in gender. Compared to the gender ratio among all the entries, women are overrepresented among the Democrats and underrepresented among the Republicans. 
+
+```{r}
+x %>% 
+  separate_rows(party, sep = "\\s*,\\s*") %>% 
+  drop_na(party) %>% 
+  mutate(party = str_replace_all(party, "Independent", "I")) %>%
+  filter(party %in% c("D", "R", "I", "L")) %>% 
+  group_by(party) %>% 
+  mutate(total_in_party = n()) %>% 
+  mutate(percent_of_party = 1 / total_in_party) %>% 
+  ggplot(aes(percent_of_party, party, fill = gender, color = gender)) +
+  geom_col() +
+  scale_y_discrete(labels = c("Democrat", "Independent", "Libretarian", "Republican")) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Party and Gender",
+       x = "Percent", 
+       y = "", 
+       fill = "Gender",
+       color = "Gender")
+```
+
+Both Republicans and Democrats have comparable percentages
+of racial minorties, though the particular minorities differ. 
+
+```{r}
+x %>% 
+   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
+                          str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
+                          str_detect(race, "Black") == TRUE ~ "Black", 
+                          str_detect(race, "White") == TRUE ~ "White",
+                          str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
+                          str_detect(race, "Asian") == TRUE ~ "Asian",
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>% 
+  filter(race %in% c("Jewish", "Black", "White", "Hispanic", "Asian")) %>% 
+  mutate(race = factor(race,
+                       levels = c("Black", "Asian", "Hispanic", "Jewish", "White"))) %>% 
+  separate_rows(party, sep = "\\s*,\\s*") %>% 
+  drop_na(party) %>% 
+  mutate(party = str_replace_all(party, "Independent", "I")) %>%
+  filter(party %in% c("D", "R", "I", "L")) %>% 
+  group_by(party) %>% 
+  mutate(total_in_party = n()) %>% 
+  mutate(percent_of_party = 1 / total_in_party) %>% 
+  ggplot(aes(percent_of_party, party, fill = race, color = race)) +
+  geom_col() +
+  scale_y_discrete(labels = c("Democrat", "Independent", "Libretarian", "Republican")) +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_fill_manual(limits = c("Black", "Asian", "Hispanic", "Jewish", "White"),
+                    values = c("black", "yellow2", "sienna", "steelblue3", "wheat")) +
+  scale_color_manual(limits = c("Black", "Asian", "Hispanic", "Jewish", "White"),
+                    values = c("black", "yellow2", "sienna", "steelblue3", "wheat")) +
+  labs(title = "Party and Race",
+       x = "Percent", 
+       y = "",
+       fill = "Race",
+       color = "Race")
+```
+
+# Roles
+
+The roles now are very rough. They have been gathered from a quick reading of 
+one source, usually Wikipedia. There are several grey areas: the intersection of Politics,
+Public Interest Law, and Activist; most lawyers have at least some experience in a 
+firm, but they do not now all have the "Law Firm" role. 
+
+Among all the entries, judges outnumber other roles. Among only the Micro Museum 
+list, "politicians" are the the greatest in number. The "Business" 
+and "Law Firm" roles are comparatively lacking.  
+
+
+```{r}
+x %>% 
+  separate_rows(category, sep = ",") %>% 
+  ggplot(aes(y = fct_rev(fct_infreq(category)))) +
+  geom_bar() +
+  labs(title = "Roles of All Phase One Entries", 
+       x = "Number", 
+       y = "")
+
+x %>% 
+  slice(1:91) %>% 
+  separate_rows(category, sep = ",") %>% 
+  ggplot(aes(y = fct_rev(fct_infreq(category)))) +
+  geom_bar() +
+  labs(title = "Roles of Micro Museum Only", 
+       x = "Number", 
+       y = "")
+```
+
+Several roles are around 60% male, which is the proportion of males among all the entries. 
+
+```{r}
+x %>% 
+  separate_rows(category, sep = ",") %>% 
+  group_by(category) %>% 
+  mutate(total_in_category = n()) %>% 
+  filter(total_in_category > 1) %>% 
+  mutate(percent_of_category = 1 / total_in_category) %>% 
+  ggplot(aes(percent_of_category, category, fill = gender, color = gender)) +
+  geom_col() +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Roles and Gender", 
+       x = "Number", 
+       y = "", 
+       fill = "Gender",
+       color = "Gender")
+```
+
+```{r}
+x %>% 
+  mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
+                          str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
+                          str_detect(race, "Black") == TRUE ~ "Black", 
+                          str_detect(race, "White") == TRUE ~ "White",
+                          str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
+                          str_detect(race, "Asian") == TRUE ~ "Asian",
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>% 
+  filter(race %in% c("Jewish", "Black", "White", "Hispanic", "Asian")) %>% 
+  mutate(race = factor(race,
+                       levels = c("Black", "Asian", "Hispanic", "Jewish", "White"))) %>% 
+  separate_rows(category, sep = ",") %>% 
+  group_by(category) %>% 
+  mutate(total_in_category = n()) %>% 
+  filter(total_in_category > 1) %>% 
+  mutate(percent_of_category = 1 / total_in_category) %>% 
+  ggplot(aes(percent_of_category, category, fill = race, color = race)) +
+  geom_col() +
+  scale_x_continuous(labels = scales::percent_format()) +
+  scale_fill_manual(limits = c("Black", "Asian", "Hispanic", "Jewish", "White"),
+                    values = c("black", "yellow2", "sienna", "steelblue3", "wheat")) +
+  scale_color_manual(limits = c("Black", "Asian", "Hispanic", "Jewish", "White"),
+                    values = c("black", "yellow2", "sienna", "steelblue3", "wheat")) +
+  labs(title = "Roles and Race", 
+       x = "Number", 
+       y = "", 
+       fill = "Race", 
+       color = "Race")
+```
+
+# Degrees
+
+As expected, the majority of degrees earned are J.Ds. 
+
+```{r}
+x %>% 
+  mutate(degree = str_replace_all(degree, ",", " & ")) %>% 
+  ggplot(aes(y = fct_rev(fct_infreq(degree)))) +
+  geom_bar() +
+  labs(title = "Degrees", 
+       x = "Number", 
+       y = "")
+```
+
+There is some but not much overlap between when LL.Bs and J.Ds are earned. No LL.Bs 
+are earned after the '60s and a few J.Ds are held by those who graduated even as
+early as the '40s.
+
+```{r}
+x %>% 
+   mutate(decade = case_when(year >= 2010 & year <= 2019 ~ "2010-2019",
+                            year >= 2000 & year <= 2009 ~ "2000-2009",
+                            year >= 1990 & year <= 1999 ~ "1990-1999",
+                            year >= 1980 & year <= 1989 ~ "1980-1989",
+                            year >= 1970 & year <= 1979 ~ "1970-1979",
+                            year >= 1960 & year <= 1969 ~ "1960-1969",
+                            year >= 1950 & year <= 1969 ~ "1950-1959",
+                            year >= 1940 & year <= 1949 ~ "1940-1949",
+                            year >= 1930 & year <= 1939 ~ "1930-1939",
+                            year >= 1920 & year <= 1929 ~ "1920-1929",
+                            year >= 1910 & year <= 1919 ~ "1910-1919",
+                            year >= 1870 & year <= 1879 ~ "1870-1879")) %>% 
+  group_by(degree) %>% 
+  mutate(total_in_degree = n()) %>% 
+  mutate(percent_of_degree = 1 / total_in_degree) %>% 
+  filter(degree %in% c("J.D.", "LL.B.", "LL.M.")) %>% 
+  ggplot(aes(percent_of_degree, degree, fill = decade, color = decade)) +
+  geom_col() +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Degree and Decade", 
+       x = "Percent",
+       y = "", 
+       fill = "Decade",
+       color = "Decade")
+```
+
