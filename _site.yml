@@ -1,7 +1,7 @@
 name: "report_website"
-title: "My Website"
+title: "Notable Alumni Reports"
 description: |
-  My Website
+  This may be easier to view than PDFs because of the figures.
 output_dir: "docs"
 navbar:
   right:
