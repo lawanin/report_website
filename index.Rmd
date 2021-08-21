@@ -154,6 +154,7 @@ x %>%
   mutate(test_sum = sum(percent_of_race)) %>% 
   ggplot(aes(x = percent_of_race, y = race, fill = gender, color = gender)) +
   geom_col() +
+  scale_x_continuous(labels = scales::percent_format()) +
   labs(title = "Races and Gender", 
        x = "Percent", 
        y = "",
@@ -312,7 +313,7 @@ x %>%
   geom_col() +
   scale_x_continuous(labels = scales::percent_format()) +
   labs(title = "Roles and Gender", 
-       x = "Number", 
+       x = "Percent", 
        y = "", 
        fill = "Gender",
        color = "Gender")
@@ -343,7 +344,7 @@ x %>%
   scale_color_manual(limits = c("Black", "Asian", "Hispanic", "Jewish", "White"),
                     values = c("black", "yellow2", "sienna", "steelblue3", "wheat")) +
   labs(title = "Roles and Race", 
-       x = "Number", 
+       x = "Percent", 
        y = "", 
        fill = "Race", 
        color = "Race")
