@@ -28,7 +28,7 @@ x <- read_csv("phase1_airtable.csv", col_types = cols()) %>%
 89 entries are Male, 52 are Female, and 1, Jack F. Trope, is likely
 male but this has not been included because of the lack of a source. 
 
-```{r}
+```{r gender-hist}
 x %>% 
   ggplot(aes(gender)) +
   geom_bar(aes(y = after_stat(count / sum(count)))) +
@@ -41,10 +41,10 @@ x %>%
 # Decades
 
 As expected, the vast majority of entries are from recent decades. The '70s and
-'80's have the most degrees. The '50s and '60s are comparatively lacking. It 
+'80s have the most degrees. The '50s and '60s are comparatively lacking. It 
 may be natural that the most recent graduates are also lacking. 
 
-```{r, warning = FALSE}
+```{r decade-hist, warning = FALSE}
 x %>% 
   separate_rows(year, sep = "\\s*/\\s*") %>% 
   mutate(year = str_replace_all(year, "[^0-9].*", "")) %>% 
@@ -59,13 +59,13 @@ x %>%
   scale_x_continuous(breaks = seq(0, 40, 5)) +
   labs(title = "Decades",
        x = "Number of Degrees",
-       y = "Decade")
+       y = "")
 ```
 
 As expected, gender balance becomes more equal in later decades. It is notable, 
 however, that females significantly outnumber males among most recent graduates. 
 
-```{r, warning = FALSE}
+```{r decade-gender, warning = FALSE}
 x %>%
   separate_rows(year, sep = "\\s*/\\s*") %>%
     mutate(year = str_replace_all(year, "[^0-9].*", "")) %>% 
@@ -102,7 +102,7 @@ x %>%
 Among all the entries, blacks outnumber other races. Among only the Micro Museum 
 list, whites are the the greatest in number, forming about 40%. 
 
-```{r}
+```{r race-hists}
 x %>% 
   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
                           str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
@@ -138,7 +138,7 @@ x %>%
 Among all races, males outnumber females. The only exceptions are the
 races represented by a single member, American Indians and  Australian Aboriginals. 
 
-```{r}
+```{r race-gender}
 x %>% 
   drop_na(race) %>% 
   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
@@ -172,7 +172,7 @@ of precedence. The first, and so primary, country for each entry is used here.
 As expected, the vast majority of entries are based in the U.S. Asian countries
 make up the the majority of foreign locations. 
 
-```{r}
+```{r country-hist}
 x %>% 
   mutate(country = str_replace_all(country, ",.*", "")) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(country)))) +
@@ -191,7 +191,7 @@ who had one displayed on Wikipedia, i.e. primarily elected officials.
 Democrats are the most represented party. Several of the parties listed below
 are for foreign countries. 
 
-```{r, warning = FALSE}
+```{r party-hist, warning = FALSE}
 x %>% 
   separate_rows(party, sep = "\\s*,\\s*") %>% 
   mutate(party = str_replace_all(party, "Independent", "I")) %>% 
@@ -212,7 +212,7 @@ x %>%
 
 Democrats are nearly equal in gender. Compared to the gender ratio among all the entries, women are overrepresented among Democrats and underrepresented among Republicans. 
 
-```{r}
+```{r party-gender}
 x %>% 
   separate_rows(party, sep = "\\s*,\\s*") %>% 
   drop_na(party) %>% 
@@ -235,7 +235,7 @@ x %>%
 Both Republicans and Democrats have comparable percentages
 of racial minorties, though the particular minorities differ. 
 
-```{r}
+```{r party-race}
 x %>% 
    mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
                           str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
@@ -281,7 +281,7 @@ list, "politicians" are the the greatest in number. The "Business"
 and "Law Firm" roles are comparatively lacking.  
 
 
-```{r}
+```{r role-hists}
 x %>% 
   separate_rows(category, sep = ",") %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
@@ -302,7 +302,7 @@ x %>%
 
 Several roles are around 60% male, which is the proportion of males among all the entries. 
 
-```{r}
+```{r role-gender}
 x %>% 
   separate_rows(category, sep = ",") %>% 
   group_by(category) %>% 
@@ -319,7 +319,7 @@ x %>%
        color = "Gender")
 ```
 
-```{r}
+```{r role-race}
 x %>% 
   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
                           str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
@@ -354,7 +354,7 @@ x %>%
 
 As expected, the majority of degrees earned are J.Ds. 
 
-```{r}
+```{r degree-hist}
 x %>% 
   mutate(degree = str_replace_all(degree, ",", " & ")) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(degree)))) +
@@ -368,7 +368,7 @@ There is some but not much overlap between when LL.Bs and J.Ds are earned. No LL
 are earned after the '60s and a few J.Ds are held by those who graduated even as
 early as the '40s.
 
-```{r}
+```{r degree-decade}
 x %>% 
    mutate(decade = case_when(year >= 2010 & year <= 2019 ~ "2010-2019",
                             year >= 2000 & year <= 2009 ~ "2000-2009",
