@@ -194,15 +194,15 @@ are for foreign countries.
 ```{r party-hist, warning = FALSE}
 x %>% 
   separate_rows(party, sep = "\\s*,\\s*") %>% 
-  mutate(party = str_replace_all(party, "Independent", "I")) %>% 
+  mutate(party = str_replace_all(party, "Independent", "Independent (Irish)")) %>% 
   drop_na(party) %>% 
   ggplot(aes(y = party)) +
   geom_bar() +
   scale_y_discrete(limits = rev(c("D", "R", "I", "L", "Green", "Democratic Progressive Party",
-                              "Kuomintang", "National Democratic Party of Tibet", 
+                              "Independent (Irish)", "Kuomintang", "National Democratic Party of Tibet", 
                               "Popular Democratic", "Reform")),
                    labels = rev(c("Democrat", "Republican", "Independent", "Libretarian", 
-                              "Green", "Democratic Progressive Party",
+                              "Green", "Democratic Progressive Party", "Independent (Irish)",
                               "Kuomintang", "National Democratic Party of Tibet", 
                               "Popular Democratic", "Reform"))) +
   labs(title = "Parties", 
@@ -216,7 +216,7 @@ Democrats are nearly equal in gender. Compared to the gender ratio among all the
 x %>% 
   separate_rows(party, sep = "\\s*,\\s*") %>% 
   drop_na(party) %>% 
-  mutate(party = str_replace_all(party, "Independent", "I")) %>%
+  mutate(party = str_replace_all(party, "Independent", "Independent (Irish)")) %>%
   filter(party %in% c("D", "R", "I", "L")) %>% 
   group_by(party) %>% 
   mutate(total_in_party = n()) %>% 
@@ -249,7 +249,7 @@ x %>%
                        levels = c("Black", "Asian", "Hispanic", "Jewish", "White"))) %>% 
   separate_rows(party, sep = "\\s*,\\s*") %>% 
   drop_na(party) %>% 
-  mutate(party = str_replace_all(party, "Independent", "I")) %>%
+  mutate(party = str_replace_all(party, "Independent", "Independent (Irish)")) %>%
   filter(party %in% c("D", "R", "I", "L")) %>% 
   group_by(party) %>% 
   mutate(total_in_party = n()) %>% 
