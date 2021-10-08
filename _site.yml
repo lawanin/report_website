@@ -5,6 +5,12 @@ description: |
 output_dir: "docs"
 navbar:
   right:
-    - text: "Phase 1 Report"
-      href: index.html
+    - text: "Reports"
+      menu:
+       - text: "Phase 1 Report"
+         href: phase1.html
+      -  text: "Phase 2 Report"
+         href: index.html
+         
+         
 output: distill::distill_article
