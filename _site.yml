@@ -9,7 +9,7 @@ navbar:
       menu:
        - text: "Phase 1 Report"
          href: phase1.html
-      -  text: "Phase 2 Report"
+       - text: "Phase 2 Report"
          href: index.html
          
          

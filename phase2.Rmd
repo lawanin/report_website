@@ -244,9 +244,6 @@ x %>%
   labs(title = "Parties", 
        x = "Number", 
        y = "")
-
-x %>% 
-  filter(is.na(party) == FALSE)
 ```
 
 Men are the majority of politicians. Men now form a slightly greater majority 
@@ -320,7 +317,7 @@ still excludes judges, who remain in a separate "Judiciary" category.
 and now includes those who practice law for the public interest and members of 
 think tanks and other NGOS.
 
-Authors, musicians,journalists, and commentators have all been included into one 
+Authors, musicians, journalists, and commentators have all been included into one 
 new role, "Arts / Media / Entertainment." Media executives also recieve this role,
 in addition to "Corporate/Business."
 
@@ -331,7 +328,7 @@ and Academia/Education remain smaller, but have increased more or less
 proportionally.
 
 
-```{r role-hists}
+```{r role-hists, layout = "l-body-outset", fig.width= 8, fig.height = 5}
 x %>% 
   separate_rows(category, sep = ",") %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
@@ -345,7 +342,7 @@ In most roles women outnumber men, most so in Academia / Education and Internati
 Among Law Firm, Judiciary, and Activist, men are slightly more or as many.
 Philanthropist is a small category which includes only men. 
 
-```{r role-gender}
+```{r role-gender, layout = "l-body-outset", fig.width= 8, fig.height = 5}
 x %>% 
   separate_rows(category, sep = ",") %>% 
   group_by(category) %>% 
@@ -362,7 +359,7 @@ x %>%
        color = "Gender")
 ```
 
-```{r role-race}
+```{r role-race, layout = "l-body-outset", fig.width= 8, fig.height = 5}
 x %>% 
   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
                           str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
@@ -392,33 +389,33 @@ x %>%
        fill = "Race", 
        color = "Race")
 
-x %>% 
-  mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
-                          str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
-                          str_detect(race, "Black") == TRUE ~ "Black", 
-                          str_detect(race, "White") == TRUE ~ "White",
-                          str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
-                          str_detect(race, "Asian") == TRUE ~ "Asian",
-                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>% 
-  filter(race %in% c("Jewish", "Black", "White", "Hispanic", "Asian")) %>% 
-  mutate(race = factor(race,
-                       levels = c("Black", "Asian", "Hispanic", "Jewish", "White"))) %>% 
-  separate_rows(category, sep = ",") %>% 
-  filter(category %in% c("Government", "Corporate / Business", "Judiciary", 
-                         "Public Interest Law / Nonprofit Legal Services", 
-                         "Academia / Education", "Law Firm")) %>% 
-  group_by(race) %>% 
-  mutate(total_in_race = n()) %>% 
-  filter(total_in_race > 1) %>% 
-  mutate(percent_of_race = 1 / total_in_race) %>% 
-  ggplot(aes(percent_of_race, race, fill = category, color = category)) +
-  geom_col() +
-  scale_x_continuous(labels = scales::percent_format()) +
-  labs(title = "Race and Roles", 
-       x = "Percent", 
-       y = "", 
-       fill = "Race", 
-       color = "Race")
+# x %>%
+#   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
+#                           str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
+#                           str_detect(race, "Black") == TRUE ~ "Black",
+#                           str_detect(race, "White") == TRUE ~ "White",
+#                           str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
+#                           str_detect(race, "Asian") == TRUE ~ "Asian",
+#                           str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>%
+#   filter(race %in% c("Jewish", "Black", "White", "Hispanic", "Asian")) %>%
+#   mutate(race = factor(race,
+#                        levels = c("Black", "Asian", "Hispanic", "Jewish", "White"))) %>%
+#   separate_rows(category, sep = ",") %>%
+#   filter(category %in% c("Government", "Corporate / Business", "Judiciary",
+#                          "Public Interest Law / Nonprofit Legal Services",
+#                          "Academia / Education", "Law Firm")) %>%
+#   group_by(race) %>%
+#   mutate(total_in_race = n()) %>%
+#   filter(total_in_race > 1) %>%
+#   mutate(percent_of_race = 1 / total_in_race) %>%
+#   ggplot(aes(percent_of_race, race, fill = category, color = category)) +
+#   geom_col() +
+#   scale_x_continuous(labels = scales::percent_format()) +
+#   labs(title = "Race and Roles",
+#        x = "Percent",
+#        y = "",
+#        fill = "Race",
+#        color = "Race")
 ```
 
 # Degrees
