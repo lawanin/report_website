@@ -10,6 +10,8 @@ navbar:
        - text: "Phase 1 Report"
          href: phase1.html
        - text: "Phase 2 Report"
+         href: phase2.html
+       - text: "Phase 3 Preliminary Report"
          href: index.html
          
          

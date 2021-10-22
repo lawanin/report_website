@@ -139,11 +139,11 @@ minorities in these entires.
 x %>% 
   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
                           str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
-                          str_detect(race, "Black") == TRUE ~ "Black", 
-                          str_detect(race, "White") == TRUE ~ "White",
+                          str_detect(race, "Black") == TRUE ~ "Black",
                           str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
                           str_detect(race, "Asian") == TRUE ~ "Asian",
-                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>%
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian",
+                          str_detect(race, "White") == TRUE ~ "White")) %>%
   ggplot(aes(race)) +
   geom_bar(aes(y = after_stat(count / sum(count)))) +
   labs(title = "Races of All Entries",
@@ -155,11 +155,11 @@ y %>%
   mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
                           str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
                           str_detect(race, "Black") == TRUE ~ "Black", 
-                          str_detect(race, "White") == TRUE ~ "White",
                           str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
                           str_detect(race, "Asian") == TRUE ~ "Asian",
-                          str_detect(race, "American Indian") == TRUE ~ "American Indian")) %>% 
-  # slice(1:91) %>%
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian",
+                          str_detect(race, "White") == TRUE ~ "White")) %>% 
+  slice(1:91) %>%
   ggplot(aes(race)) +
   geom_bar(aes(y = after_stat(count / sum(count)))) +
   labs(title = "Races of Micro Museum Entries Only",
