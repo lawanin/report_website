@@ -1,7 +1,7 @@
 ---
 title: "Phase 1 Report"
 description: This may be easier to view than a PDF, because of the figures.
-site: distill::distill_website
+site: distill::distill_article
 ---
 
 ```{r setup, include=FALSE}

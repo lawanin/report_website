@@ -1,6 +1,6 @@
 ---
 title: "Phase 2 Report"
-site: distill::distill_website
+site: distill::distill_article
 ---
 
 ```{r setup, include=FALSE}
