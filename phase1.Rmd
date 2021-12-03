@@ -298,9 +298,6 @@ x %>%
   labs(title = "Roles of Micro Museum Only", 
        x = "Number", 
        y = "")
-
-x %>% 
-  separate_rows(category, sep = ",")
 ```
 
 Several roles are around 60% male, which is the proportion of males among all the entries. 
