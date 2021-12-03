@@ -89,8 +89,10 @@ for these are given in parentheses on the AirTable spreadsheet.
 ```{r role}
 x %>% 
   separate_rows(category, sep = ",") %>% 
+  mutate(category = str_replace_all(category, "Public Interest Law / Nonprofit Legal Services", "Public Interest")) %>% 
   filter(priority == 1) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
+  scale_x_continuous(breaks = seq(0, 70, 10)) +
   geom_bar() +
   labs(title = "Priority Level 1: Roles", 
        x = "", 
@@ -101,6 +103,7 @@ x %>%
   filter(priority == 2) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
   geom_bar() +
+  scale_x_continuous(breaks = seq(0, 70, 10)) +
   labs(title = "Priority Level 2: Roles", 
        x = "", 
        y = "")
@@ -110,6 +113,7 @@ x %>%
   filter(priority == 3) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
   geom_bar() +
+  scale_x_continuous(breaks = seq(0, 70, 10)) +
   labs(title = "Priority Level 3: Roles", 
        x = "", 
        y = "")

@@ -42,11 +42,11 @@ male but this has not been included because of the lack of a source.
 ```{r gender-hist}
 x %>% 
   ggplot(aes(gender)) +
-  geom_bar(aes(y = after_stat(count / sum(count)))) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Gender", 
+  geom_bar() +
+  scale_y_continuous(breaks = seq(0, 200, 40), limits = c(0, 200)) +
+  labs(title = "Gender in Phase 2 Entries", 
        x = "",
-       y = "Number") 
+       y = "") 
 ```
 
 # Decades
@@ -144,11 +144,11 @@ x %>%
                           str_detect(race, "Asian") == TRUE ~ "Asian",
                           str_detect(race, "American Indian") == TRUE ~ "American Indian",
                           str_detect(race, "White") == TRUE ~ "White")) %>%
-  ggplot(aes(race)) +
+  ggplot(aes(fct_infreq(race))) +
   geom_bar(aes(y = after_stat(count / sum(count)))) +
-  labs(title = "Races of All Entries",
+  labs(title = "Races in Phase 2 Entries",
        x = "",
-       y = "Percent") +
+       y = "") +
   scale_y_continuous(labels = scales::percent_format())
 
 y %>% 
@@ -160,11 +160,11 @@ y %>%
                           str_detect(race, "American Indian") == TRUE ~ "American Indian",
                           str_detect(race, "White") == TRUE ~ "White")) %>% 
   slice(1:91) %>%
-  ggplot(aes(race)) +
+  ggplot(aes(fct_infreq(race))) +
   geom_bar(aes(y = after_stat(count / sum(count)))) +
   labs(title = "Races of Micro Museum Entries Only",
        x = "",
-       y = "Percent") +
+       y = "") +
   scale_y_continuous(labels = scales::percent_format())
 ```
 
@@ -330,11 +330,13 @@ proportionally.
 
 ```{r role-hists, layout = "l-body-outset", fig.width= 8, fig.height = 5}
 x %>% 
+  filter(is.na(category) == FALSE) %>% 
   separate_rows(category, sep = ",") %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
   geom_bar() +
-  labs(title = "Roles of All Entries", 
-       x = "Number", 
+  scale_x_continuous(breaks = seq(0, 120, 10)) +
+  labs(title = "Roles in Phase 2 Entries", 
+       x = "", 
        y = "")
 ```
 
@@ -349,8 +351,12 @@ x %>%
   mutate(total_in_category = n()) %>% 
   filter(total_in_category > 1) %>% 
   mutate(percent_of_category = 1 / total_in_category) %>% 
-  ggplot(aes(percent_of_category, category, fill = gender, color = gender)) +
+  filter(is.na(category) == "FALSE") %>% 
+  mutate(gender_as_number = if_else(gender == "Male", 1, 0)) %>% 
+  mutate(percent_male_in_category = sum(gender_as_number, na.rm = TRUE) / total_in_category) %>% 
+  ggplot(aes(percent_of_category, fct_reorder(category, percent_male_in_category), fill = gender, color = gender)) +
   geom_col() +
+  geom_vline(xintercept = .5, color = "white") +
   scale_x_continuous(labels = scales::percent_format()) +
   labs(title = "Roles and Gender", 
        x = "Percent", 
@@ -422,10 +428,12 @@ x %>%
 
 ```{r degree-hist}
 x %>% 
+  filter(is.na(degree) == FALSE) %>% 
   mutate(degree = str_replace_all(degree, ",", " & ")) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(degree)))) +
   geom_bar() +
-  labs(title = "Degrees", 
-       x = "Number", 
+  scale_x_continuous(breaks = seq(0, 300, 50)) +
+  labs(title = "Degrees in Phase 2 Entries", 
+       x = "", 
        y = "")
 ```
