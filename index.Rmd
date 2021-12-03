@@ -87,6 +87,7 @@ for these are given in parentheses on the AirTable spreadsheet.
 x %>% 
   separate_rows(category, sep = ",") %>% 
   mutate(category = str_replace_all(category, "Public Interest Law / Nonprofit Legal Services", "Public Interest")) %>% 
+  filter(is.na(category) == FALSE) %>% 
   filter(priority == 1) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
   scale_x_continuous(breaks = seq(0, 70, 10)) +
@@ -98,6 +99,7 @@ x %>%
 x %>% 
   separate_rows(category, sep = ",") %>% 
   filter(priority == 2) %>% 
+  filter(is.na(category) == FALSE) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
   geom_bar() +
   scale_x_continuous(breaks = seq(0, 70, 10)) +
@@ -108,6 +110,7 @@ x %>%
 x %>% 
   separate_rows(category, sep = ",") %>% 
   filter(priority == 3) %>% 
+  filter(is.na(category) == FALSE) %>% 
   ggplot(aes(y = fct_rev(fct_infreq(category)))) +
   geom_bar() +
   scale_x_continuous(breaks = seq(0, 70, 10)) +
