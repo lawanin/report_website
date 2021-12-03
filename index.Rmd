@@ -19,7 +19,8 @@ x <- read_csv("phase3_airtable.csv") %>%
          gender = `Gender`, 
          party = `Party`, 
          country = `Country`,
-         priority = `Priority Level`) 
+         priority = `Priority Level`) %>% 
+  mutate(priority = as.numeric(str_replace_all(priority, "[^1-9]", "")))
 ```
 
 # Priority Levels
@@ -30,7 +31,6 @@ The priority levels divide the entries pretty evenly.
 x %>% 
   filter(is.na(priority) == FALSE) %>% 
   group_by(priority) %>% 
-  mutate(priority = as.numeric(str_replace_all(priority, "[^1-9]", ""))) %>% 
   summarize(priority_total = n()) %>% 
   rename(`Priority Level` = priority,
          Total = priority_total) -> a
