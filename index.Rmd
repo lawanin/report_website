@@ -48,9 +48,8 @@ Government and Corporate and formed a small majority in Judiciary and Law Firm.
 ```{r gender}
 x %>% 
   filter(priority == 1) %>% 
-  ggplot(aes(x = gender, fill = gender)) +
+  ggplot(aes(x = gender)) +
   geom_bar() +
-  scale_fill_manual(limits = c("Male", "Female"), values = c("#00BFC4", "#F8766D")) +
   labs(title = "Priority Level 1: Gender", 
        fill = "Gender",
        x = "", 
@@ -58,9 +57,8 @@ x %>%
 
 x %>% 
   filter(priority == 2) %>% 
-  ggplot(aes(x = gender, fill = gender)) +
+  ggplot(aes(x = gender)) +
   geom_bar() +
-  scale_fill_manual(limits = c("Male", "Female"), values = c("#00BFC4", "#F8766D")) +
   labs(title = "Priority Level 2: Gender", 
        fill = "Gender",
        x = "", 
@@ -68,9 +66,8 @@ x %>%
 
 x %>% 
   filter(priority == 3) %>% 
-  ggplot(aes(x = gender, fill = gender)) +
+  ggplot(aes(x = gender)) +
   geom_bar() +
-  scale_fill_manual(limits = c("Male", "Female"), values = c("#00BFC4", "#F8766D")) +
   labs(title = "Priority Level 3: Gender", 
        fill = "Gender",
        x = "", 

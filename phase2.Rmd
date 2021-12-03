@@ -41,12 +41,14 @@ male but this has not been included because of the lack of a source.
 
 ```{r gender-hist}
 x %>% 
-  ggplot(aes(gender)) +
+  ggplot(aes(gender, fill = gender)) +
   geom_bar() +
   scale_y_continuous(breaks = seq(0, 200, 40), limits = c(0, 200)) +
+  scale_fill_manual(limits = c("Male", "Female"), values = c("#00BFC4", "#F8766D")) +
   labs(title = "Gender in Phase 2 Entries", 
        x = "",
-       y = "") 
+       y = "") +
+  theme(legend.position = "none")
 ```
 
 # Decades
