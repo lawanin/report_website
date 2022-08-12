@@ -1,0 +1,108 @@
+---
+title: "Memo Graphs"
+site: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+```{r}
+x <- read_csv("phase1b_airtable.csv", col_types = cols()) %>% 
+  rename(name = `Name (Last, First)`, 
+         degree = `HLS Degree(s)`,
+         year = `Grad Date(s)`,
+         category = `Position / Role`, 
+         race = `Race`, 
+         gender = `Gender`, 
+         party = `Party`, 
+         country = `Country`) %>% 
+  select(name, degree, year, category, race, gender, party, country) %>% 
+  drop_na(name)
+```
+
+
+```{r gender-hist}
+x %>% 
+  ggplot(aes(gender)) +
+  geom_bar() +
+  scale_y_continuous(breaks = seq(0, 200, 40), limits = c(0, 200)) +
+  labs(title = "Gender in Phase 2 Entries",
+       subtitle = "About 55% of entries are female. NA indicates no source confirming gender.",
+       x = "",
+       y = "")
+```
+
+
+```{r race-hists}
+x %>% 
+  mutate(race = case_when(str_detect(race, "Jewish") == TRUE ~ "Jewish",
+                          str_detect(race, "Aboriginal") == TRUE ~ "Aboriginal",
+                          str_detect(race, "Black") == TRUE ~ "Black",
+                          str_detect(race, "Hispanic") == TRUE ~ "Hispanic",
+                          str_detect(race, "Asian") == TRUE ~ "Asian",
+                          str_detect(race, "American Indian") == TRUE ~ "American Indian",
+                          str_detect(race, "White") == TRUE ~ "White")) %>%
+  ggplot(aes(fct_infreq(race))) +
+  geom_bar(aes(y = after_stat(count / sum(count)))) +
+  labs(title = "Races in Phase 2 Entries",
+       subtitle = "About 66% of entries are non-white.",
+       x = "",
+       y = "") +
+  scale_y_continuous(labels = scales::percent_format())
+```
+
+
+```{r role-hists, layout = "l-body-outset", fig.width= 8, fig.height = 5}
+x %>% 
+  filter(is.na(category) == FALSE) %>% 
+  separate_rows(category, sep = ",") %>% 
+  ggplot(aes(y = fct_rev(fct_infreq(category)))) +
+  geom_bar() +
+  scale_x_continuous(breaks = seq(0, 120, 10)) +
+  labs(title = "Roles in Phase 2 Entries", 
+       subtitle = "About 55% of roles are public sector. \nFour Largest: Government-23%; Corporate-17%; Judiciary-17%; Public Interest-12%",
+       x = "", 
+       y = "") +
+    theme(plot.subtitle = element_text(size = 10))
+```
+
+
+```{r role-gender, layout = "l-body-outset", fig.width= 8, fig.height = 5}
+x %>% 
+  separate_rows(category, sep = ",") %>% 
+  group_by(category) %>% 
+  mutate(total_in_category = n()) %>% 
+  filter(total_in_category > 1) %>% 
+  mutate(percent_of_category = 1 / total_in_category) %>% 
+  filter(is.na(category) == "FALSE") %>% 
+  mutate(gender_as_number = if_else(gender == "Male", 1, 0)) %>% 
+  mutate(percent_male_in_category = sum(gender_as_number, na.rm = TRUE) / total_in_category) %>% 
+  ggplot(aes(percent_of_category, fct_reorder(category, percent_male_in_category), fill = gender, color = gender)) +
+  geom_col() +
+  geom_vline(xintercept = .5, color = "white") +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(title = "Roles and Gender", 
+       subtitle = "Most roles are roughly equal in gender. \nFemales more likely to exceed males, as they also do among all entries.",
+       x = "", 
+       y = "", 
+       fill = "Gender",
+       color = "Gender") +
+  theme(plot.subtitle = element_text(size = 10))
+```
+
+# Degrees
+
+```{r degree-hist}
+x %>% 
+  filter(is.na(degree) == FALSE) %>% 
+  mutate(degree = str_replace_all(degree, ",", " & ")) %>% 
+  ggplot(aes(y = fct_rev(fct_infreq(degree)))) +
+  geom_bar() +
+  scale_x_continuous(breaks = seq(0, 300, 50)) +
+  labs(title = "Degrees in Phase 2 Entries", 
+       subtitle = "About 17% of degrees earned are not J.Ds/LL.Bs.",
+       x = "", 
+       y = "")
+```
